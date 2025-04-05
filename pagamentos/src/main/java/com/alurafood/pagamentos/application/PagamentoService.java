@@ -1,6 +1,7 @@
 package com.alurafood.pagamentos.application;
 
 import com.alurafood.pagamentos.domain.Pagamento;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,13 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PagamentoService {
 
     private final PagamentoServiceRepository repository;
-
-    public PagamentoService(PagamentoServiceRepository repository) {
-        this.repository = repository;
-    }
 
     public Page<Pagamento> getAllPagamentos(Pageable pageable) {
         return repository.getAllPagamentos(pageable);
