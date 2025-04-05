@@ -10,6 +10,7 @@ import com.alurafood.pedidos.infra.dto.PedidoResponseDto;
 import com.alurafood.pedidos.infra.mapper.PedidoMapperDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,6 +32,11 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 public class PedidoController {
 
     private final PedidoService pedidoService;
+
+    @GetMapping("/porta")
+    public String retornaPorta(@Value("${local.server.port}") String porta){
+        return String.format("Requisição respondida pela instância executando na porta %s", porta);
+    }
 
     @PostMapping
     public ResponseEntity<PedidoResponseDto> criarPedido(
