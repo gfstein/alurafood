@@ -3,6 +3,8 @@ package com.alurafood.pagamentos.infra.persistence;
 import com.alurafood.pagamentos.application.PagamentoServiceRepository;
 import com.alurafood.pagamentos.domain.Pagamento;
 import com.alurafood.pagamentos.exceptions.NotFoundException;
+import com.alurafood.pagamentos.infra.mapper.PagamentoMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -10,30 +12,27 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
+@RequiredArgsConstructor
 public class PagamentoRepositoryJpa implements PagamentoServiceRepository {
 
     private final PagamentoRepository repository;
 
-    public PagamentoRepositoryJpa(PagamentoRepository repository) {
-        this.repository = repository;
-    }
-
     @Override
     public Page<Pagamento> getAllPagamentos(Pageable pageable) {
         return repository.findAll(pageable)
-                .map(Pagamento::of);
+                .map(PagamentoMapper::fromEntity);
     }
 
     @Override
     public Pagamento getPagamentoById(UUID id) {
         return repository.findById(id)
-                .map(Pagamento::of)
+                .map(PagamentoMapper::fromEntity)
                 .orElseThrow(() -> new NotFoundException(String.format("Pagamento com id %s não encontrado", id)));
     }
 
     @Override
     public Pagamento criarPagamento(Pagamento pagamento) {
-        return Pagamento.of(repository.save(PagamentoEntity.fromModel(pagamento)));
+        return PagamentoMapper.fromEntity(repository.save(PagamentoMapper.toEntity(pagamento)));
     }
 
     @Override
@@ -42,9 +41,9 @@ public class PagamentoRepositoryJpa implements PagamentoServiceRepository {
             throw new NotFoundException("Pagamento não encontrado com o ID: " + id);
         }
 
-        PagamentoEntity entity = PagamentoEntity.fromModel(pagamento);
+        PagamentoEntity entity = PagamentoMapper.toEntity(pagamento);
         entity.setId(id);
-        return Pagamento.of(repository.save(entity));
+        return PagamentoMapper.fromEntity(repository.save(entity));
     }
 
     @Override

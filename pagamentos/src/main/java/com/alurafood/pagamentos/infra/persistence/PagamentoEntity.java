@@ -2,7 +2,10 @@ package com.alurafood.pagamentos.infra.persistence;
 
 import com.alurafood.pagamentos.domain.Pagamento;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
@@ -14,9 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class PagamentoEntity {
 
     @Id
@@ -33,22 +34,6 @@ public class PagamentoEntity {
 
     private UUID pedidoId;
     private UUID formaDePagamentoId;
-
-    public static PagamentoEntity fromModel(Pagamento pagamento) {
-        Objects.requireNonNull(pagamento, "O pagamento não pode ser nulo");
-
-        return PagamentoEntity.builder()
-                .id(pagamento.getId())
-                .valor(pagamento.getValor())
-                .nome(pagamento.getNome())
-                .numero(pagamento.getNumero())
-                .expiracao(pagamento.getExpiracao())
-                .codigo(pagamento.getCodigo())
-                .status(pagamento.getStatus())
-                .pedidoId(pagamento.getPedidoId())
-                .formaDePagamentoId(pagamento.getFormaDePagamentoId())
-                .build();
-    }
 
     @Override
     public final boolean equals(Object o) {

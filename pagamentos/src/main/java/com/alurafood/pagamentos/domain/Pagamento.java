@@ -1,8 +1,6 @@
 package com.alurafood.pagamentos.domain;
 
 import com.alurafood.pagamentos.exceptions.DomainException;
-import com.alurafood.pagamentos.infra.dto.PagamentoDto;
-import com.alurafood.pagamentos.infra.persistence.PagamentoEntity;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -26,39 +24,36 @@ public class Pagamento {
         CONFIRMADO,
         CANCELADO;
     }
-    
-    private Pagamento(){}
 
-    public static Pagamento of(PagamentoEntity entity) {
+    private Pagamento() {
+    }
+
+    public static Pagamento create(UUID id, BigDecimal valor, String nome, String numero,
+                                   String expiracao, String codigo, Status status,
+                                   UUID pedidoId, UUID formaDePagamentoId
+    ) {
         Pagamento pagamento = new Pagamento();
-        pagamento.setId(entity.getId());
-        pagamento.setValor(entity.getValor());
-        pagamento.setNome(entity.getNome());
-        pagamento.setNumero(entity.getNumero());
-        pagamento.setExpiracao(entity.getExpiracao());
-        pagamento.setCodigo(entity.getCodigo());
-        pagamento.setStatus(entity.getStatus());
-        pagamento.setPedidoId(entity.getPedidoId());
-        pagamento.setFormaDePagamentoId(entity.getFormaDePagamentoId());
+        pagamento.setId(id);
+        pagamento.setValor(valor);
+        pagamento.setNome(nome);
+        pagamento.setNumero(numero);
+        pagamento.setExpiracao(expiracao);
+        pagamento.setCodigo(codigo);
+        pagamento.setStatus(status != null ? status : Pagamento.Status.CRIADO);
+        pagamento.setPedidoId(pedidoId);
+        pagamento.setFormaDePagamentoId(formaDePagamentoId);
 
         return pagamento;
     }
 
-    public static Pagamento of(PagamentoDto request) {
-        Pagamento pagamento = new Pagamento();
-        pagamento.setId(request.id() == null ? UUID.randomUUID() : request.id());
-        pagamento.setValor(request.valor());
-        pagamento.setNome(request.nome());
-        pagamento.setNumero(request.numero());
-        pagamento.setExpiracao(request.expiracao());
-        pagamento.setCodigo(request.codigo());
-        pagamento.setStatus(request.status() != null ? request.status() : Status.CRIADO);
-        pagamento.setPedidoId(request.pedidoId());
-        pagamento.setFormaDePagamentoId(request.formaDePagamentoId());
-
-        return pagamento;
-
+    public static Pagamento novoPagamento(BigDecimal valor, String nome, String numero,
+                                          String expiracao, String codigo,
+                                          UUID pedidoId, UUID formaDePagamentoId) {
+        return Pagamento.create(
+                UUID.randomUUID(), valor, nome, numero, expiracao,
+                codigo, Status.CRIADO, pedidoId, formaDePagamentoId);
     }
+
 
     private void setId(UUID id) {
 

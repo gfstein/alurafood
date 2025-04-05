@@ -36,19 +36,4 @@ public record PagamentoDto(
         @NotNull(message = "O ID do pedido não pode ser nulo")
         UUID pedidoId
 
-) {
-
-    public static PagamentoDto fromModel(Pagamento pagamento) {
-        return new PagamentoDto(
-                pagamento.getId(),
-                pagamento.getValor(),
-                pagamento.getNome(),
-                pagamento.getNumero(),
-                pagamento.getExpiracao(),
-                pagamento.getCodigo(),
-                pagamento.getStatus(),
-                pagamento.getFormaDePagamentoId(),
-                pagamento.getPedidoId());
-    }
-
-}
+) {}
