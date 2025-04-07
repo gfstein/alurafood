@@ -1,4 +1,4 @@
-package com.alurafood.pagamentos.infra.persistence;
+package com.alurafood.pagamentos.infra.persistence.entitie;
 
 import com.alurafood.pagamentos.domain.Pagamento;
 import jakarta.persistence.*;

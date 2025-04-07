@@ -105,7 +105,7 @@ public class PedidoController {
         return ResponseEntity.ok(PedidoMapperDto.toPedidoResponseDto(pedidoAtualizado));
     }
 
-    @PutMapping("/{id}/pagamento")
+    @PutMapping("/{id}/pago")
     public ResponseEntity<PedidoResponseDto> aprovarPagamento(@PathVariable UUID id) {
         Pedido pedidoAtualizado = pedidoService.aprovaPagamentoPedido(id);
         return ResponseEntity.ok(PedidoMapperDto.toPedidoResponseDto(pedidoAtualizado));

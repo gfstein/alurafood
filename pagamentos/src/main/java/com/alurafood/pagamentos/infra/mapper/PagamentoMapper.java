@@ -2,7 +2,7 @@ package com.alurafood.pagamentos.infra.mapper;
 
 import com.alurafood.pagamentos.domain.Pagamento;
 import com.alurafood.pagamentos.infra.dto.PagamentoDto;
-import com.alurafood.pagamentos.infra.persistence.PagamentoEntity;
+import com.alurafood.pagamentos.infra.persistence.entitie.PagamentoEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

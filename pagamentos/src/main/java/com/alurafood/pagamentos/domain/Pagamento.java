@@ -22,6 +22,7 @@ public class Pagamento {
     public enum Status {
         CRIADO,
         CONFIRMADO,
+        CONFIRMADO_SEM_INTEGRACAO,
         CANCELADO;
     }
 
@@ -136,5 +137,12 @@ public class Pagamento {
         }
 
         this.status = status;
+    }
+
+    public void confirmarPagamento() {
+        this.status = Status.CONFIRMADO;
+    }
+    public void confirmarPagamentoSemIntegracao() {
+        this.status = Status.CONFIRMADO_SEM_INTEGRACAO;
     }
 }

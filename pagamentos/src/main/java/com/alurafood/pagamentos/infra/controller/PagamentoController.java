@@ -1,12 +1,14 @@
 package com.alurafood.pagamentos.infra.controller;
 
-import com.alurafood.pagamentos.application.PagamentoService;
+import com.alurafood.pagamentos.application.usecase.PagamentoService;
 import com.alurafood.pagamentos.domain.Pagamento;
 import com.alurafood.pagamentos.infra.dto.PagamentoDto;
 import com.alurafood.pagamentos.infra.mapper.PagamentoMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +22,7 @@ import java.util.UUID;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
+@Slf4j
 @RestController
 @RequestMapping("/pagamentos")
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
@@ -55,6 +58,17 @@ public class PagamentoController {
     public ResponseEntity<Void> remover(@PathVariable @NotNull UUID id) {
         service.excluirPagamento(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/confirmar")
+    @CircuitBreaker(name = "atualizaPedido", fallbackMethod = "pagamentoAutorizadoComIntegracaoPendente")
+    public void confirmarPagamento(@PathVariable @NotNull UUID id){
+        service.confirmarPagamento(id);
+    }
+
+    public void pagamentoAutorizadoComIntegracaoPendente(UUID id, Exception e) {
+        log.error("Erro ao confirmar pagamento com id {}", id, e);
+        service.confirmarPagamentoFallback(id);
     }
 
 }

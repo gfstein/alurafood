@@ -1,9 +1,11 @@
-package com.alurafood.pagamentos.infra.persistence;
+package com.alurafood.pagamentos.infra.adaptar;
 
-import com.alurafood.pagamentos.application.PagamentoServiceRepository;
+import com.alurafood.pagamentos.application.port.PagamentoServiceRepository;
 import com.alurafood.pagamentos.domain.Pagamento;
 import com.alurafood.pagamentos.exceptions.NotFoundException;
 import com.alurafood.pagamentos.infra.mapper.PagamentoMapper;
+import com.alurafood.pagamentos.infra.persistence.entitie.PagamentoEntity;
+import com.alurafood.pagamentos.infra.persistence.repository.PagamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

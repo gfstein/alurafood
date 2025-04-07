@@ -1,4 +1,4 @@
-package com.alurafood.pagamentos.application;
+package com.alurafood.pagamentos.application.port;
 
 import com.alurafood.pagamentos.domain.Pagamento;
 import org.springframework.data.domain.Page;
