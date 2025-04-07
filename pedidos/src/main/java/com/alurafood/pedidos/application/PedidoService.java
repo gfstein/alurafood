@@ -1,6 +1,6 @@
 package com.alurafood.pedidos.application;
 
-import com.alurafood.pedidos.domain.ItemDoPedido;
+import com.alurafood.pedidos.domain.ItemPedido;
 import com.alurafood.pedidos.domain.Pedido;
 import com.alurafood.pedidos.exceptions.DomainException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class PedidoService {
     private final PedidoServiceRepository pedidoRepository;
 
     @Transactional
-    public Pedido criarPedido(List<ItemDoPedido> itens) {
+    public Pedido criarPedido(List<ItemPedido> itens) {
         Pedido pedido = Pedido.novoPedido(itens);
         return pedidoRepository.salvar(pedido);
     }
@@ -47,7 +47,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public Pedido adicionarItemAoPedido(UUID pedidoId, ItemDoPedido novoItem) {
+    public Pedido adicionarItemAoPedido(UUID pedidoId, ItemPedido novoItem) {
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId)
                 .orElseThrow(() -> new DomainException("Pedido não encontrado com o ID: " + pedidoId));
 

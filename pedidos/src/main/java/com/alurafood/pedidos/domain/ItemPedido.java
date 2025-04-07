@@ -3,27 +3,30 @@ package com.alurafood.pedidos.domain;
 import com.alurafood.pedidos.exceptions.DomainException;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
-public class ItemDoPedido {
+public class ItemPedido {
 
     private UUID id;
     private Integer quantidade;
     private String descricao;
+    private BigDecimal valor;
     
-    private ItemDoPedido() {}
+    private ItemPedido() {}
 
-    public static ItemDoPedido create(UUID id, Integer quantidade, String descricao) {
-        ItemDoPedido item = new ItemDoPedido();
+    public static ItemPedido create(UUID id, Integer quantidade, String descricao, BigDecimal valor) {
+        ItemPedido item = new ItemPedido();
         item.setId(id);
         item.setQuantidade(quantidade);
         item.setDescricao(descricao);
+        item.setValor(valor);
         return item;
     }
 
-    public static ItemDoPedido novoItemDePedido(Integer quantidade, String descricao) {
-        return ItemDoPedido.create(UUID.randomUUID(), quantidade, descricao);
+    public static ItemPedido novoItemDePedido(Integer quantidade, String descricao, BigDecimal valor) {
+        return ItemPedido.create(UUID.randomUUID(), quantidade, descricao, valor);
     }
     
     
@@ -52,5 +55,14 @@ public class ItemDoPedido {
         }
 
         this.descricao = descricao;
+    }
+
+    private void setValor(BigDecimal valor) {
+
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException("Valor não pode ser nulo ou menor que zero");
+        }
+
+        this.valor = valor;
     }
 }

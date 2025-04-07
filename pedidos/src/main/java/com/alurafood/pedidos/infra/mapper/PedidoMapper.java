@@ -27,7 +27,7 @@ public class PedidoMapper {
         }
 
         var itensDomain = entity.getItens().stream()
-                .map(ItemDoPedidoMapper::fromEntity)
+                .map(ItemPedidoMapper::fromEntity)
                 .collect(Collectors.toList());
 
         return Pedido.create(
@@ -63,6 +63,7 @@ public class PedidoMapper {
         entity.setId(domain.getId());
         entity.setDataHora(domain.getDataHora());
         entity.setStatus(domain.getStatus());
+        entity.setTotal(domain.getTotal());
 
         // A lista de itens é inicializada vazia
         entity.setItens(new ArrayList<>());
@@ -70,7 +71,7 @@ public class PedidoMapper {
         // Se o pedido possui itens, adiciona-os à entidade
         if (domain.getItens() != null) {
             domain.getItens().forEach(item -> {
-                var itemEntity = ItemDoPedidoMapper.toEntity(item);
+                var itemEntity = ItemPedidoMapper.toEntity(item);
                 itemEntity.setPedido(entity);
                 entity.getItens().add(itemEntity);
             });

@@ -3,6 +3,7 @@ package com.alurafood.pedidos.domain;
 import com.alurafood.pedidos.exceptions.DomainException;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +15,13 @@ public class Pedido {
     private UUID id;
     private LocalDateTime dataHora;
     private Status status;
-    private List<ItemDoPedido> itens = new ArrayList<>();
+    private List<ItemPedido> itens = new ArrayList<>();
+    private BigDecimal total;
 
     private Pedido() {
     }
 
-    public static Pedido create(UUID id, LocalDateTime dataHora, Status status, List<ItemDoPedido> itens) {
+    public static Pedido create(UUID id, LocalDateTime dataHora, Status status, List<ItemPedido> itens) {
         Pedido pedido = new Pedido();
         pedido.setId(id);
         pedido.setDataHora(dataHora);
@@ -28,7 +30,7 @@ public class Pedido {
         return pedido;
     }
 
-    public static Pedido novoPedido(List<ItemDoPedido> itens) {
+    public static Pedido novoPedido(List<ItemPedido> itens) {
         return Pedido.create(UUID.randomUUID(), LocalDateTime.now(), Status.REALIZADO, itens);
     }
 
@@ -55,18 +57,30 @@ public class Pedido {
         this.status = status;
     }
 
-    private void setItens(List<ItemDoPedido> itens) {
+    private void setItens(List<ItemPedido> itens) {
         if (itens == null || itens.isEmpty()) {
             throw new DomainException("Itens do pedido não podem ser nulos ou vazios");
         }
         this.itens = itens;
+        calcularTotal();
     }
 
-    public void adicionarItem(ItemDoPedido item) {
+    private void calcularTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (ItemPedido item : this.itens) {
+            total = total.add(item.getValor().multiply(BigDecimal.valueOf(item.getQuantidade())));
+        }
+
+        this.total = total;
+    }
+
+    public void adicionarItem(ItemPedido item) {
         if (item == null) {
             throw new DomainException("Item do pedido não pode ser nulo");
         }
         this.itens.add(item);
+        calcularTotal();
     }
 
     public void removerItem(UUID itemId) {
@@ -79,6 +93,7 @@ public class Pedido {
         if (!removed) {
             throw new DomainException("Item com o id especificado não encontrado no pedido");
         }
+        calcularTotal();
     }
 
     public void aprovarPagamento() {
@@ -90,7 +105,6 @@ public class Pedido {
 
         this.status = Status.PAGO;
     }
-
 
     public enum Status {
         REALIZADO,

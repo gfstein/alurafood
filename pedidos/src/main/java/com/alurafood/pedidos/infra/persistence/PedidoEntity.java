@@ -4,6 +4,7 @@ import com.alurafood.pedidos.domain.Pedido;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ public class PedidoEntity {
     @Column(nullable = false)
     private Pedido.Status status;
 
+    @Column(nullable = false)
+    private BigDecimal total;
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemDoPedidoEntity> itens = new ArrayList<>();
+    private List<ItemPedidoEntity> itens = new ArrayList<>();
 }

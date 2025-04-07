@@ -1,10 +1,8 @@
 package com.alurafood.pedidos.infra.mapper;
 
-import com.alurafood.pedidos.domain.ItemDoPedido;
+import com.alurafood.pedidos.domain.ItemPedido;
 import com.alurafood.pedidos.domain.Pedido;
-import com.alurafood.pedidos.infra.dto.CriarPedidoDto;
 import com.alurafood.pedidos.infra.dto.ItemPedidoDto;
-import com.alurafood.pedidos.infra.dto.ItemResponseDto;
 import com.alurafood.pedidos.infra.dto.PedidoResponseDto;
 
 import java.util.List;
@@ -23,54 +21,49 @@ public class PedidoMapperDto {
     /**
      * Converte um ItemPedidoDto para um objeto de domínio ItemDoPedido
      */
-    public static ItemDoPedido toItemDomainEntity(ItemPedidoDto dto) {
-        return ItemDoPedido.novoItemDePedido(
+    public static ItemPedido toItemDomainEntity(ItemPedidoDto dto) {
+        return ItemPedido.novoItemDePedido(
                 dto.quantidade(),
-                dto.descricao()
+                dto.descricao(),
+                dto.valor()
         );
     }
 
     /**
      * Converte uma lista de ItemPedidoDto para uma lista de objetos de domínio ItemDoPedido
      */
-    public static List<ItemDoPedido> toItemDomainList(List<ItemPedidoDto> dtos) {
+    public static List<ItemPedido> toItemDomainList(List<ItemPedidoDto> dtos) {
         return dtos.stream()
                 .map(PedidoMapperDto::toItemDomainEntity)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Converte um objeto de domínio ItemDoPedido para ItemResponseDto
+     * Converte um objeto de domínio ItemDoPedido para ItemPedidoDto
      */
-    public static ItemResponseDto toItemResponseDto(ItemDoPedido entity) {
-        return new ItemResponseDto(
+    public static ItemPedidoDto toItemPedidoDto(ItemPedido entity) {
+        return new ItemPedidoDto(
                 entity.getId(),
+                entity.getDescricao(),
                 entity.getQuantidade(),
-                entity.getDescricao()
+                entity.getValor()
         );
     }
 
     /**
-     * Converte uma lista de objetos de domínio ItemDoPedido para uma lista de ItemResponseDto
+     * Converte uma lista de objetos de domínio ItemDoPedido para uma lista de ItemPedidoDto
      */
-    public static List<ItemResponseDto> toItemResponseDtoList(List<ItemDoPedido> entities) {
+    public static List<ItemPedidoDto> toItemPedidoDtoList(List<ItemPedido> entities) {
         return entities.stream()
-                .map(PedidoMapperDto::toItemResponseDto)
+                .map(PedidoMapperDto::toItemPedidoDto)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Converte um CriarPedidoDto para uma lista de ItemDoPedido que será usado para criar um pedido
-     */
-    public static List<ItemDoPedido> criarPedidoDtoToItemList(CriarPedidoDto dto) {
-        return toItemDomainList(dto.itens());
     }
 
     /**
      * Converte um objeto de domínio Pedido para PedidoResponseDto
      */
     public static PedidoResponseDto toPedidoResponseDto(Pedido entity) {
-        List<ItemResponseDto> itens = toItemResponseDtoList(entity.getItens());
+        List<ItemPedidoDto> itens = toItemPedidoDtoList(entity.getItens());
         String mensagem = switch (entity.getStatus()) {
             case REALIZADO -> "Pedido realizado com sucesso!";
             case PAGO -> "Pagamento aprovado!";
@@ -82,9 +75,8 @@ public class PedidoMapperDto {
             case CANCELADO -> "Pedido cancelado.";
         };
 
-        // Converter ItemResponseDto para ItemPedidoDto para compatibilidade com o construtor
         List<ItemPedidoDto> itensPedidoDto = itens.stream()
-                .map(item -> new ItemPedidoDto(item.id(), item.descricao(), item.quantidade()))
+                .map(item -> new ItemPedidoDto(item.id(), item.descricao(), item.quantidade(), item.valor()))
                 .toList();
 
         return new PedidoResponseDto(
@@ -93,6 +85,7 @@ public class PedidoMapperDto {
                 entity.getStatus(),
                 itensPedidoDto,
                 itens.size(),
+                entity.getTotal(),
                 mensagem
         );
     }

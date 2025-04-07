@@ -1,16 +1,14 @@
 package com.alurafood.pedidos.infra.controller;
 
 import com.alurafood.pedidos.application.PedidoService;
-import com.alurafood.pedidos.domain.ItemDoPedido;
+import com.alurafood.pedidos.domain.ItemPedido;
 import com.alurafood.pedidos.domain.Pedido;
 import com.alurafood.pedidos.infra.dto.AtualizaStatusDto;
-import com.alurafood.pedidos.infra.dto.CriarPedidoDto;
 import com.alurafood.pedidos.infra.dto.ItemPedidoDto;
 import com.alurafood.pedidos.infra.dto.PedidoResponseDto;
 import com.alurafood.pedidos.infra.mapper.PedidoMapperDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,18 +31,13 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
 
-    @GetMapping("/porta")
-    public String retornaPorta(@Value("${local.server.port}") String porta){
-        return String.format("Requisição respondida pela instância executando na porta %s", porta);
-    }
-
     @PostMapping
     public ResponseEntity<PedidoResponseDto> criarPedido(
-            @RequestBody @Valid CriarPedidoDto dto,
+            @RequestBody @Valid List<ItemPedidoDto> dto,
             UriComponentsBuilder uriBuilder) {
 
         // Usar o mapper para converter o DTO para objetos de domínio
-        List<ItemDoPedido> itens = PedidoMapperDto.criarPedidoDtoToItemList(dto);
+        List<ItemPedido> itens = PedidoMapperDto.toItemDomainList(dto);
 
         Pedido pedidoCriado = pedidoService.criarPedido(itens);
 
@@ -90,7 +83,7 @@ public class PedidoController {
             UriComponentsBuilder uriBuilder) {
 
         // Usar o mapper para converter o DTO para objeto de domínio
-        ItemDoPedido item = PedidoMapperDto.toItemDomainEntity(itemDto);
+        ItemPedido item = PedidoMapperDto.toItemDomainEntity(itemDto);
 
         Pedido pedidoAtualizado = pedidoService.adicionarItemAoPedido(id, item);
 
